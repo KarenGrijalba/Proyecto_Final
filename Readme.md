@@ -1,3 +1,3 @@
-# Taller 4  - Fundamentos de programación funcional y concurrente
+# Proyecto Final  - El problema de la reconstrucción de cadenas
 
-Implementción de multiplicación concurrente de matrices
+
