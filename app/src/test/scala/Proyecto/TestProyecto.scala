@@ -17,6 +17,22 @@ class TestProyecto extends AnyFunSuite{
         val n = 3
         val o: Oraculo = (s: Seq[Char]) => s == Seq('a', 'c', 'g')
         val resultado = Proyecto.reconstruirCadenaIngenuo(n, o)
+        //println(resultado)
         assert(resultado == Seq('a', 'c', 'g'))
     }
+    test("Prueba 2: Reconstruir cadena ingenuo"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 4
+        val o: Oraculo = (s: Seq[Char]) => s == Seq('a', 'a', 'c', 'g')
+        val resultado = Proyecto.reconstruirCadenaIngenuo(n, o)
+        assert(resultado == Seq('a', 'a', 'c', 'g'))
+    }
+    test("Prueba 3: Reconstruir cadena ingenuo"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 5
+        val o: Oraculo = (s: Seq[Char]) => s == Seq('a', 't', 'c', 'g', 't')
+        val resultado = Proyecto.reconstruirCadenaIngenuo(n, o)
+        assert(resultado == Seq('a', 't', 'c', 'g', 't'))
+    }
+
 }
