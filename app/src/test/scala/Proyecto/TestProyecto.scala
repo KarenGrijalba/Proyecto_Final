@@ -115,5 +115,26 @@ class TestProyecto extends AnyFunSuite{
         val resultado = Proyecto.reconstruirCadenaTurboMejorada(n, o)
         assert(resultado == Seq('a', 'c', 'g', 'c'))
     }
+    test("Prueba 2: Reconstruir cadena turbo mejorada"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 4
+        val o: Oraculo = (s: Seq[Char]) => Seq('c', 'g', 'c', 't').mkString.contains(s.mkString)
+        val resultado = Proyecto.reconstruirCadenaTurboMejorada(n, o)
+        assert(resultado == Seq('c', 'g', 'c', 't'))
+    }
+    test("Prueba 3: Reconstruir cadena turbo mejorada"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 4
+        val o: Oraculo = (s: Seq[Char]) => Seq('g', 'c', 't', 'a').mkString.contains(s.mkString)
+        val resultado = Proyecto.reconstruirCadenaTurboMejorada(n, o)
+        assert(resultado == Seq('g', 'c', 't', 'a'))
+    }
+    test("Prueba 4: Reconstruir cadena turbo mejorada"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 4
+        val o: Oraculo = (s: Seq[Char]) => Seq('t', 'a', 'c', 'g').mkString.contains(s.mkString)
+        val resultado = Proyecto.reconstruirCadenaTurboMejorada(n, o)
+        assert(resultado == Seq('t', 'a', 'c', 'g'))
+    }
 
 }

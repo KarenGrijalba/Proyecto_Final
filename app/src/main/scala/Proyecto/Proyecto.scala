@@ -32,8 +32,8 @@ object Proyecto {
       //println("cadenas: " + cadenas)
       def resultado(): Seq[Char] = {
         cadenas flatMap{ cadena =>
-          if (o(cadena)) cadena
-          else Seq.empty[Char]
+          if (o(cadena)) cadena // Si la secuencia cumple con la condición, se agrega a la lista
+          else Seq.empty[Char] // Si no cumple, se agrega una lista vacía
         }
       }
       resultado()
@@ -57,8 +57,7 @@ object Proyecto {
 
   def reconstruirCadenaMejorado(n: Int, o: Oraculo): Seq[Char] = {
 
-    def generarCadenasCandidatas(k: Int, candidatas: Seq[Seq[Char]]): Seq[Char] = {
-      //println(candidatas)
+    def generarCadenasCandidatas(k: Int, candidatas: Seq[Seq[Char]]): Seq[Char] = { // Función que genera las cadenas candidatas
       if (k == n) {
         candidatas.head
       } else {
@@ -68,14 +67,14 @@ object Proyecto {
             else Seq.empty[Seq[Char]]
           }
         }
-        generarCadenasCandidatas(k + 1, nuevasCandidatas)
+        generarCadenasCandidatas(k + 1, nuevasCandidatas) // Se llama recursivamente con las nuevas cadenas candidatas
       }
     }
 
       def reconstruirCadena(): Seq[Char] = {
 
         def cadenasCandidatas(): Seq[Char] = {
-          val cadenas = alfabeto.map(Seq(_))
+          val cadenas = alfabeto.map(Seq(_)) // Genera las cadenas iniciales de longitud 1
 
           generarCadenasCandidatas(1, cadenas)
         }
@@ -104,7 +103,22 @@ object Proyecto {
   }
 
   def reconstruirCadenaTurboMejorada(n: Int, o: Oraculo): Seq[Char] = {
-    Seq[Char]()
+
+    def filtrar(subCadena: Seq[Seq[Char]], k: Int): Seq[Seq[Char]] = {
+      subCadena.flatMap(s1 => subCadena.map(s2 => s1 ++ s2)) // Generar todas las subcadenas posibles
+        .filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)) // Filtrar las subcadenas que no cumplan con la condición
+    }
+
+    def construirSubcadena(k: Int, subCadena: Seq[Seq[Char]]): Seq[Char] = {
+      if (k > n) subCadena.head
+      else {
+        val nuevoSubcadena = filtrar(subCadena, k / 2)
+        construirSubcadena(k * 2, nuevoSubcadena)
+      }
+    }
+    val cadena = alfabeto.map(Seq(_))
+    val subcadena = construirSubcadena(2, cadena)
+    subcadena
   }
 }
 
