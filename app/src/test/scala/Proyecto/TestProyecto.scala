@@ -12,7 +12,34 @@ import org.scalatestplus.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class TestProyecto extends AnyFunSuite{
-
+    test("Prueba 1: Reconstruir cadena ingenuo Parallel") {
+        type Oraculo = Seq[Char] => Boolean
+        val n = 3
+        val o: Oraculo = (s: Seq[Char]) => s == Seq('a', 'c', 'g')
+        val resultado = Proyecto.reconstruirCadenaParalelo(n, o)
+        assert(resultado == Seq('a', 'c', 'g'))
+    }
+    test("Prueba 2: Reconstruir cadena ingenuo Parallel") {
+        type Oraculo = Seq[Char] => Boolean
+        val n = 4
+        val o: Oraculo = (s: Seq[Char]) => s == Seq('a', 'a', 'c', 'g')
+        val resultado = Proyecto.reconstruirCadenaParalelo(n, o)
+        assert(resultado == Seq('a', 'a', 'c', 'g'))
+    }
+    test("Prueba 3: Reconstruir cadena ingenuo Parallel") {
+        type Oraculo = Seq[Char] => Boolean
+        val n = 5
+        val o: Oraculo = (s: Seq[Char]) => s == Seq('a', 't', 'c', 'g', 't')
+        val resultado = Proyecto.reconstruirCadenaParalelo(n, o)
+        assert(resultado == Seq('a', 't', 'c', 'g', 't'))
+    }
+    test("Prueba 4: Reconstruir cadena ingenuo Parallel") {
+        type Oraculo = Seq[Char] => Boolean
+        val n = 4
+        val o: Oraculo = (s: Seq[Char]) => s == Seq('a', 't', 'c', 'g')
+        val resultado = Proyecto.reconstruirCadenaParalelo(n, o)
+        assert(resultado == Seq('a', 't', 'c', 'g'))
+    }
     test("Prueba 1: Reconstruir cadena ingenuo"){
         type Oraculo = Seq[Char] => Boolean
         val n = 3
