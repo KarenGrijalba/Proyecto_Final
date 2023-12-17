@@ -40,7 +40,7 @@ class TestProyecto extends AnyFunSuite{
         val resultado = Proyecto.reconstruirCadenaParalelo(n, o)
         assert(resultado == Seq('a', 't', 'c', 'g'))
     }
-
+ ////////////// TEST RECONSTRUIR CADENA INGENUO //////////////
 
     test("Prueba 1: Reconstruir cadena ingenuo"){
         type Oraculo = Seq[Char] => Boolean
@@ -81,6 +81,9 @@ class TestProyecto extends AnyFunSuite{
         println("Resultado: " + resultado)
         assert(true)
     }*/
+
+    ////////////// TEST RECONSTRUIR CADENA INGENUO MEJORADO //////////////
+
     test("Prueba 1: Reconstruir cadena mejorado"){
         type Oraculo = Seq[Char] => Boolean
         val n = 3
@@ -109,6 +112,41 @@ class TestProyecto extends AnyFunSuite{
         val resultado = Proyecto.reconstruirCadenaMejorado(n, o)
         assert(resultado == Seq('a', 'g', 'c', 'a', 't'))
     }
+    ////////////// TEST RECONSTRUIR CADENA INGENUO MEJORADO PARALELO //////////////
+
+    test("Prueba 1: Reconstruir cadena mejorado paralelo"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 3
+        val o: Oraculo = (s: Seq[Char]) => Seq('a', 'c', 'g').mkString.contains(s.mkString)
+        val resultado = Proyecto.reconstruirCadenaMejoradoParalela(n, o)
+        assert(resultado == Seq('a', 'c', 'g'))
+    }
+    test("Prueba 2: Reconstruir cadena mejorado paralelo"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 4
+        val o: Oraculo = (s: Seq[Char]) => Seq('a', 'a', 'c', 'g').mkString.contains(s.mkString)
+        val resultado = Proyecto.reconstruirCadenaMejoradoParalela(n, o)
+        assert(resultado == Seq('a', 'a', 'c', 'g'))
+    }
+    test("Prueba 3: Reconstruir cadena mejorado paralelo"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 5
+        val o: Oraculo = (s: Seq[Char]) => Seq('a', 't', 'c', 'g', 't').mkString.contains(s.mkString)
+        val resultado = Proyecto.reconstruirCadenaMejoradoParalela(n, o)
+        assert(resultado == Seq('a', 't', 'c', 'g', 't'))
+    }
+    test("Prueba 4: Reconstruir cadena mejorado paralelo"){
+        type Oraculo = Seq[Char] => Boolean
+        val n = 5
+        val o: Oraculo = (s: Seq[Char]) => Seq('a', 'g', 'c', 'a', 't').mkString.contains(s.mkString)
+        val resultado = Proyecto.reconstruirCadenaMejoradoParalela(n, o)
+        assert(resultado == Seq('a', 'g', 'c', 'a', 't'))
+    }
+
+
+
+    ////////////// TEST RECONSTRUIR CADENA TURBO //////////////
+
     test("Prueba 1: Reconstruir cadena turbo"){
         type Oraculo = Seq[Char] => Boolean
         val n = 4
