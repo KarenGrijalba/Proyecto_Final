@@ -4,7 +4,7 @@
 * @version 1.0
 * @note 22 de Noviembre de 2023 
  */
-package taller4
+package Proyecto
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.junit.runner.RunWith
@@ -40,6 +40,8 @@ class TestProyecto extends AnyFunSuite{
         val resultado = Proyecto.reconstruirCadenaParalelo(n, o)
         assert(resultado == Seq('a', 't', 'c', 'g'))
     }
+
+
     test("Prueba 1: Reconstruir cadena ingenuo"){
         type Oraculo = Seq[Char] => Boolean
         val n = 3

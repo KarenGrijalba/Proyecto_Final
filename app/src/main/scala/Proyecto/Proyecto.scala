@@ -3,8 +3,9 @@
   * Autores: <Estudiantes>
   * Profesor: Carlos A Delgado
   */
-package taller4
+package Proyecto
 
+import com.sun.tools.javac.Main
 import org.scalameter.measure
 import org.scalameter.withWarmer
 import org.scalameter.Warmer
@@ -15,45 +16,59 @@ object Proyecto {
   val alfabeto = Seq('a', 'c', 'g', 't')
   type Oraculo = Seq[Char] => Boolean
 
+
   def reconstruirCadenaParalelo(n: Int, o: Oraculo): Seq[Char] = {
 
-    def generarCadenasParalelo(n: Int): Seq[Seq[Char]] = {
+    def generarCadenas(n: Int): Seq[Seq[Char]] = {
       if (n == 0) Seq(Seq())
-      else {
-        val tasks = for {
-          elemento <- alfabeto.grouped(4).toSeq
-        } yield task {
-          generarCadenasParalelo(n - 1).flatMap { combinacion =>
-            elemento ++: combinacion
+      else
+        alfabeto flatMap { elemento =>
+          generarCadenas(n - 1) map { combinacion =>
+            elemento +: combinacion
           }
         }
-        parallel(tasks.head, tasks(1), tasks(2), tasks(3)).productIterator.toSeq.asInstanceOf[Seq[Seq[Seq[Char]]]].flatten
-      }
     }
-
 
     def reconstruirCadena(): Seq[Char] = {
-      val cadenas = generarCadenasParalelo(n) // Genera todas las cadenas de longitud n
+      val cadenas = generarCadenas(n)
 
-      val tasks = cadenas.grouped(4).toSeq.map { grupo =>
-        task {
-          grupo.flatMap { cadena =>
+      if (n % 2 == 0) {
+        val (cadena1, cadena2) = parallel(cadenas.take(n / 2), (cadenas.drop(n / 2)))
+        val resultado1: Seq[Char] = {
+          cadena1 flatMap { cadena =>
             if (o(cadena)) cadena // Si la secuencia cumple con la condición, se agrega a la lista
             else Seq.empty[Char] // Si no cumple, se agrega una lista vacía
-            // Al finalizar el Flatmap se obtiene una lista aplanada con las cadenas que cumplen con la condición, eliminando de esta manera las cadenas vacías
           }
         }
-      }
+        val resultado2: Seq[Char] = {
+          cadena2 flatMap { cadena =>
+            if (o(cadena)) cadena // Si la secuencia cumple con la condición, se agrega a la lista
+            else Seq.empty[Char] // Si no cumple, se agrega una lista vacía
+          }
 
-      parallel(
-        tasks.headOption.getOrElse(Seq.empty),
-        tasks.lift(1).getOrElse(Seq.empty),
-        tasks.lift(2).getOrElse(Seq.empty),
-        tasks.lift(3).getOrElse(Seq.empty)
-      ).productIterator.toSeq.asInstanceOf[Seq[Seq[Char]]].flatten
+        }
+        resultado1 ++ resultado2
+      } else {
+        val (cadena1, cadena2) = parallel(cadenas.take((n + 1) / 2), cadenas.drop((n - 1) / 2))
+        val resultado1: Seq[Char] = {
+          cadena1 flatMap { cadena =>
+            if (o(cadena)) cadena // Si la secuencia cumple con la condición, se agrega a la lista
+            else Seq.empty[Char] // Si no cumple, se agrega una lista vacía
+          }
+        }
+        val resultado2: Seq[Char] = {
+          cadena2 flatMap { cadena =>
+            if (o(cadena)) cadena // Si la secuencia cumple con la condición, se agrega a la lista
+            else Seq.empty[Char] // Si no cumple, se agrega una lista vacía
+          }
+        }
+        resultado1 ++ resultado2
+      }
     }
     reconstruirCadena()
-  }
+    }
+
+
   def reconstruirCadenaIngenuo(n: Int, o: Oraculo): Seq[Char] = {
 
     def generarCadenas(n: Int): Seq[Seq[Char]] = {
@@ -146,7 +161,6 @@ object Proyecto {
       subCadena.flatMap(s1 => subCadena.map(s2 => s1 ++ s2)) // Generar todas las subcadenas posibles
         .filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)) // Filtrar las subcadenas que no cumplan con la condición
     }
-
     def construirSubcadena(k: Int, subCadena: Seq[Seq[Char]]): Seq[Char] = {
       if (k > n) subCadena.head
       else {
