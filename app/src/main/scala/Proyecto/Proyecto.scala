@@ -1,6 +1,6 @@
 /**
   * Taller 3 - Programación Funcional
-  * Autores: <Estudiantes>
+  * Autores: <Carlos Stiven Ruiz Rojas 2259629, Karen Grijalba Ortiz 2259626, Jhony Fernando Duque 2259398 >
   * Profesor: Carlos A Delgado
   */
 package Proyecto
@@ -16,7 +16,7 @@ object Proyecto {
   val alfabeto = Seq('a', 'c', 'g', 't')
   type Oraculo = Seq[Char] => Boolean
 
-/////////////// CADENA INGENUO PARALELO ///////////////
+  /////////////// CADENA INGENUO PARALELO ///////////////
 
   def reconstruirCadenaParalelo(n: Int, o: Oraculo): Seq[Char] = {
 
@@ -67,10 +67,11 @@ object Proyecto {
         resultado1 ++ resultado2
       }
     }
-    reconstruirCadena()
-    }
 
-//////////CADENA INGENUO SECUENCIAL ////////////////////
+    reconstruirCadena()
+  }
+
+  //////////CADENA INGENUO SECUENCIAL ////////////////////
 
   def reconstruirCadenaIngenuo(n: Int, o: Oraculo): Seq[Char] = {
 
@@ -87,13 +88,15 @@ object Proyecto {
 
     def reconstruirCadena(): Seq[Char] = {
       val cadenas = generarCadenas(n) // Genera todas las cadenas de longitud n
+
       //println("cadenas: " + cadenas)
       def resultado(): Seq[Char] = {
-        cadenas flatMap{ cadena =>
+        cadenas flatMap { cadena =>
           if (o(cadena)) cadena // Si la secuencia cumple con la condición, se agrega a la lista
           else Seq.empty[Char] // Si no cumple, se agrega una lista vacía
         }
       }
+
       resultado()
     }
 
@@ -118,13 +121,15 @@ object Proyecto {
       }
     }
 
-      def reconstruirCadena(): Seq[Char] = {
-        def cadenasCandidatas(): Seq[Char] = {
-          val cadenas = alfabeto.map(Seq(_)) // Genera las cadenas iniciales de longitud 1
-          generarCadenasCandidatas(1, cadenas)
-        }
-        cadenasCandidatas()
+    def reconstruirCadena(): Seq[Char] = {
+      def cadenasCandidatas(): Seq[Char] = {
+        val cadenas = alfabeto.map(Seq(_)) // Genera las cadenas iniciales de longitud 1
+        generarCadenasCandidatas(1, cadenas)
       }
+
+      cadenasCandidatas()
+    }
+
     reconstruirCadena()
   }
 
@@ -135,7 +140,7 @@ object Proyecto {
       if (k == n) {
         candidatas.head
       } else {
-        if (k%2 == 0) {
+        if (k % 2 == 0) {
           val nuevasCandidatas1 = candidatas.take(k / 2).flatMap { candidata =>
             alfabeto.flatMap { elemento =>
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
@@ -151,7 +156,7 @@ object Proyecto {
           }
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           generarCadenasCandidatas(k + 1, candidatasfinal) // Se llama recursivamente con las nuevas cadenas candidatas
-        } else{
+        } else {
           val nuevasCandidatas1 = candidatas.take((k + 1) / 2).flatMap { candidata =>
             alfabeto.flatMap { elemento =>
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
@@ -177,12 +182,14 @@ object Proyecto {
         val cadenas = alfabeto.map(Seq(_)) // Genera las cadenas iniciales de longitud 1
         generarCadenasCandidatas(1, cadenas)
       }
+
       cadenasCandidatas()
     }
+
     reconstruirCadena()
   }
 
-
+  /////////// CADENA TURBO SECUENCIAL ///////////////
 
   def reconstruirCadenaTurbo(n: Int, o: Oraculo): Seq[Char] = {
     def construirSubcadena(k: Int, subcadena: Seq[Seq[Char]]): Seq[Char] = {
@@ -198,10 +205,65 @@ object Proyecto {
         construirSubcadena(k * 2, nuevoSubcadena)
       }
     }
+
     val cadenas = alfabeto.map(Seq(_))
     val subcadena = construirSubcadena(1, cadenas)
     subcadena
   }
+
+  /////////// CADENA TURBO PARALELO ///////////////
+
+  def reconstruirCadenaTurboParalela(n: Int, o: Oraculo): Seq[Char] = {
+    def construirSubcadena(k: Int, subcadena: Seq[Seq[Char]]): Seq[Char] = {
+      if (k == n) subcadena.head
+      else {
+        if (k % 2 == 0) {
+          val nuevasCandidatas1 = subcadena.take(k / 2).flatMap { candidata =>
+            subcadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+          }
+          val nuevasCandidatas2 = subcadena.drop(k / 2).flatMap { candidata =>
+            subcadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+
+          }
+          val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
+          construirSubcadena(k * 2, candidatasfinal)
+        } else {
+          val nuevasCandidatas1 = subcadena.take((k + 1) / 2).flatMap { candidata =>
+            subcadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+          }
+          val nuevasCandidatas2 = subcadena.drop((k - 1) / 2).flatMap { candidata =>
+            subcadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+
+          }
+          val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
+          construirSubcadena(k * 2, candidatasfinal)
+        }
+      }
+    }
+
+    val cadenas = alfabeto.map(Seq(_))
+    val subcadena = construirSubcadena(1, cadenas)
+    subcadena
+  }
+
+  /////////// CADENA TURBO MEJORADO SECUENCIAL ///////////////
+
 
   def reconstruirCadenaTurboMejorada(n: Int, o: Oraculo): Seq[Char] = {
 
@@ -209,6 +271,7 @@ object Proyecto {
       subCadena.flatMap(s1 => subCadena.map(s2 => s1 ++ s2)) // Generar todas las subcadenas posibles
         .filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)) // Filtrar las subcadenas que no cumplan con la condición
     }
+
     def construirSubcadena(k: Int, subCadena: Seq[Seq[Char]]): Seq[Char] = {
       if (k > n) subCadena.head
       else {
@@ -216,10 +279,66 @@ object Proyecto {
         construirSubcadena(k * 2, nuevoSubcadena)
       }
     }
+
     val cadena = alfabeto.map(Seq(_))
     val subcadena = construirSubcadena(2, cadena)
     subcadena
   }
+
+  /////////// CADENA TURBO MEJORADO PARALELO ///////////////
+
+  /*
+  def reconstruirCadenaTurboMejoradaParalela(n: Int, o: Oraculo): Seq[Char] = {
+
+    def filtrar(subCadena: Seq[Seq[Char]], k: Int): Seq[Seq[Char]] = {
+      subCadena.flatMap(s1 => subCadena.map(s2 => s1 ++ s2)) // Generar todas las subcadenas posibles
+        .filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)) // Filtrar las subcadenas que no cumplan con la condición
+    }
+
+    def construirSubcadena(k: Int, subCadena: Seq[Seq[Char]]): Seq[Char] = {
+      if (k > n) subCadena.head
+      else {
+        if (k % 2 == 0) {
+          val nuevasCandidatas1 = subCadena.take(k / 2).flatMap { candidata =>
+            subCadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+          }
+          val nuevasCandidatas2 = subCadena.drop(k / 2).flatMap { candidata =>
+            subCadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+
+          }
+          val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
+          construirSubcadena(k * 2, candidatasfinal)
+        } else {
+          val nuevasCandidatas1 = subCadena.take((k + 1) / 2).flatMap { candidata =>
+            subCadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+          }
+          val nuevasCandidatas2 = subCadena.drop((k - 1) / 2).flatMap { candidata =>
+            subCadena.flatMap { elemento =>
+              val nuevaSecuencia = candidata ++ elemento
+              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
+              else Seq.empty[Seq[Char]]
+            }
+
+          }
+          val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
+        }
+      }
+    }
+  }
+
+  */
 }
 
 
