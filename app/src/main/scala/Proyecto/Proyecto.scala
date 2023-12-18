@@ -9,7 +9,9 @@ import com.sun.tools.javac.Main
 import org.scalameter.measure
 import org.scalameter.withWarmer
 import org.scalameter.Warmer
+import scala.util.Random
 import common._
+
 
 object Proyecto {
 
@@ -228,7 +230,6 @@ object Proyecto {
               if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
               else Seq.empty[Seq[Char]]
             }
-
           })
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           construirSubcadena(k * 2, candidatasfinal)
@@ -304,7 +305,60 @@ object Proyecto {
     val subcadena = construirSubcadena(2, cadena)
     subcadena
   }
+  def compareTime[T](Fsec: => T, Fpar: => T, numEjecuciones: Int = 1): (Double, Double, Double) = {
+    def medirTiempo(function: => T): Double = {
+      val TimeResults = (1 to numEjecuciones).map { _ =>
+        val Begin = System.nanoTime()
 
+        try {
+          function
+        } catch {
+          case _: Throwable => // Manejar cualquier excepción
+        }
+        val fin = System.nanoTime()
+        (fin - Begin).toDouble / 1e6 // Convertir a milisegundos
+      }
+      TimeResults.sum / numEjecuciones // Promedio de tiempos
+    }
+
+    val tiempo_Secuencial = medirTiempo(Fsec)
+    val tiempo_Paralelo = medirTiempo(Fpar)
+    val Diferencia = tiempo_Secuencial / tiempo_Paralelo
+    (tiempo_Secuencial, tiempo_Paralelo, Diferencia)
+  }
+
+  def generaterandomseq(size: Int, alfabeto: Seq[Char]): String = {
+    val random = new Random
+    (1 to size).map(_ => alfabeto(random.nextInt(alfabeto.length))).mkString
+  }
+  def main(Args: Array[String]): Unit = {
+    for (n <- 2 to 16) {
+
+      val  alfabeto = Seq('a', 'c', 'g', 't')
+      type Oraculo = Seq[Char] => Boolean
+
+      val busqueda = generaterandomseq(n, alfabeto)
+      val oraculo: Oraculo = (subcadena: Seq[Char]) => busqueda.contains(subcadena.mkString)
+      println(s"Para cadenas de tamano: $n y  su busqueda: $busqueda")
+
+      println("Solucion ingenua paralela vs la solución ingenua secuencial")
+      val Ingenuo = compareTime(reconstruirCadenaParalelo(n, oraculo), reconstruirCadenaIngenuo(n, oraculo))
+      println(Ingenuo)
+
+      println("Solucion mejorada paralela vs solución mejorada secuencial")
+      val resultadosMejorado = compareTime(reconstruirCadenaMejoradoParalela(n, oraculo), reconstruirCadenaMejorado(n, oraculo))
+      println(resultadosMejorado)
+
+      println("Solucion Turbo paralela vs solución turbo secuencial")
+      val resultadosturbo = compareTime(reconstruirCadenaTurbo(n, oraculo), reconstruirCadenaTurboParalela(n, oraculo))
+      println(resultadosturbo)
+
+      println("Solucion Turbo mejorada paralela vs solución turbo mejorada secuencial")
+      val resultadosturbomejor = compareTime(reconstruirCadenaTurboMejoradaParalela(n, oraculo), reconstruirCadenaTurboMejorada(n, oraculo))
+      println(resultadosturbomejor)
+
+    }
+  }
 }
 
 
