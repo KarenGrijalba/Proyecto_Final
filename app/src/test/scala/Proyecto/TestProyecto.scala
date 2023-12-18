@@ -241,7 +241,7 @@ class TestProyecto extends AnyFunSuite{
 
     ////////////// TEST RECONSTRUIR CADENA TURBO MEJORADO PARALELO //////////////
 
-    /*
+
     test("Prueba 1: Reconstruir cadena turbo mejorada paralelo"){
         type Oraculo = Seq[Char] => Boolean
         val n = 4
@@ -270,6 +270,5 @@ class TestProyecto extends AnyFunSuite{
         val resultado = Proyecto.reconstruirCadenaTurboMejoradaParalela(n, o)
         assert(resultado == Seq('t', 'a', 'c', 'g'))
     }
-    */
 
 }
