@@ -153,7 +153,6 @@ object Proyecto {
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
               else Seq.empty[Seq[Char]]
             }
-
           })
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           generarCadenasCandidatas(k + 1, candidatasfinal) // Se llama recursivamente con las nuevas cadenas candidatas
@@ -168,12 +167,10 @@ object Proyecto {
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
               else Seq.empty[Seq[Char]]
             }
-
           })
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           generarCadenasCandidatas(k + 1, candidatasfinal) // Se llama recursivamente con las nuevas cadenas candidatas
         }
-
       }
     }
 
@@ -191,7 +188,7 @@ object Proyecto {
 
   /////////// CADENA TURBO SECUENCIAL ///////////////
 
-  def reconstruirCadenaTurbo(n: Int, o: Oraculo): Seq[Char] = {
+  def reconstruirCadenaTurbo(n: Int, o: Oraculo): Seq[Char] = { //Debido a la implementación de la función, solo funciona con cadenas de tamaño ^n
     def construirSubcadena(k: Int, subcadena: Seq[Seq[Char]]): Seq[Char] = {
       if (k == n) subcadena.head
       else {
@@ -332,7 +329,7 @@ object Proyecto {
     (1 to size).map(_ => alfabeto(random.nextInt(alfabeto.length))).mkString
   }
   def main(Args: Array[String]): Unit = {
-    for (n <- 2 to 16) {
+    for (n <- 16 to 16) {
 
       val  alfabeto = Seq('a', 'c', 'g', 't')
       type Oraculo = Seq[Char] => Boolean
@@ -353,10 +350,10 @@ object Proyecto {
       val resultadosturbo = compareTime(reconstruirCadenaTurbo(n, oraculo), reconstruirCadenaTurboParalela(n, oraculo))
       println(resultadosturbo)
 
+
       println("Solucion Turbo mejorada paralela vs solución turbo mejorada secuencial")
       val resultadosturbomejor = compareTime(reconstruirCadenaTurboMejoradaParalela(n, oraculo), reconstruirCadenaTurboMejorada(n, oraculo))
       println(resultadosturbomejor)
-
     }
   }
 }
