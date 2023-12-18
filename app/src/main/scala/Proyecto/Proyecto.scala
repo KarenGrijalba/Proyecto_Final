@@ -141,35 +141,33 @@ object Proyecto {
         candidatas.head
       } else {
         if (k % 2 == 0) {
-          val nuevasCandidatas1 = candidatas.take(k / 2).flatMap { candidata =>
+          val (nuevasCandidatas1, nuevasCandidatas2) = parallel(candidatas.take(k / 2).flatMap { candidata =>
             alfabeto.flatMap { elemento =>
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
               else Seq.empty[Seq[Char]]
             }
-          }
-          val nuevasCandidatas2 = candidatas.drop(k / 2).flatMap { candidata =>
+          }, candidatas.drop(k / 2).flatMap { candidata =>
             alfabeto.flatMap { elemento =>
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
               else Seq.empty[Seq[Char]]
             }
 
-          }
+          })
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           generarCadenasCandidatas(k + 1, candidatasfinal) // Se llama recursivamente con las nuevas cadenas candidatas
         } else {
-          val nuevasCandidatas1 = candidatas.take((k + 1) / 2).flatMap { candidata =>
+          val (nuevasCandidatas1, nuevasCandidatas2) = parallel(candidatas.take((k + 1) / 2).flatMap { candidata =>
             alfabeto.flatMap { elemento =>
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
               else Seq.empty[Seq[Char]]
             }
-          }
-          val nuevasCandidatas2 = candidatas.drop((k - 1) / 2).flatMap { candidata =>
+          }, candidatas.drop((k - 1) / 2).flatMap { candidata =>
             alfabeto.flatMap { elemento =>
               if (o(candidata :+ elemento)) Seq(candidata :+ elemento)
               else Seq.empty[Seq[Char]]
             }
 
-          }
+          })
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           generarCadenasCandidatas(k + 1, candidatasfinal) // Se llama recursivamente con las nuevas cadenas candidatas
         }
@@ -218,39 +216,37 @@ object Proyecto {
       if (k == n) subcadena.head
       else {
         if (k % 2 == 0) {
-          val nuevasCandidatas1 = subcadena.take(k / 2).flatMap { candidata =>
+          val(nuevasCandidatas1,nuevasCandidatas2) = parallel(subcadena.take(k / 2).flatMap { candidata =>
             subcadena.flatMap { elemento =>
               val nuevaSecuencia = candidata ++ elemento
               if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
               else Seq.empty[Seq[Char]]
             }
-          }
-          val nuevasCandidatas2 = subcadena.drop(k / 2).flatMap { candidata =>
+          }, subcadena.drop(k / 2).flatMap { candidata =>
             subcadena.flatMap { elemento =>
               val nuevaSecuencia = candidata ++ elemento
               if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
               else Seq.empty[Seq[Char]]
             }
 
-          }
+          })
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           construirSubcadena(k * 2, candidatasfinal)
         } else {
-          val nuevasCandidatas1 = subcadena.take((k + 1) / 2).flatMap { candidata =>
+          val(nuevasCandidatas1,nuevasCandidatas2) = parallel(subcadena.take((k + 1) / 2).flatMap { candidata =>
             subcadena.flatMap { elemento =>
               val nuevaSecuencia = candidata ++ elemento
               if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
               else Seq.empty[Seq[Char]]
             }
-          }
-          val nuevasCandidatas2 = subcadena.drop((k - 1) / 2).flatMap { candidata =>
+          }, subcadena.drop((k - 1) / 2).flatMap { candidata =>
             subcadena.flatMap { elemento =>
               val nuevaSecuencia = candidata ++ elemento
               if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
               else Seq.empty[Seq[Char]]
             }
 
-          }
+          })
           val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
           construirSubcadena(k * 2, candidatasfinal)
         }
@@ -263,7 +259,6 @@ object Proyecto {
   }
 
   /////////// CADENA TURBO MEJORADO SECUENCIAL ///////////////
-
 
   def reconstruirCadenaTurboMejorada(n: Int, o: Oraculo): Seq[Char] = {
 
@@ -290,54 +285,30 @@ object Proyecto {
   /*
   def reconstruirCadenaTurboMejoradaParalela(n: Int, o: Oraculo): Seq[Char] = {
 
-    def filtrar(subCadena: Seq[Seq[Char]], k: Int): Seq[Seq[Char]] = {
-      subCadena.flatMap(s1 => subCadena.map(s2 => s1 ++ s2)) // Generar todas las subcadenas posibles
-        .filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)) // Filtrar las subcadenas que no cumplan con la condición
-    }
+      def filtrar(subCadena: Seq[Seq[Char]], k: Int): Seq[Seq[Char]] = {
+        subCadena.flatMap(s1 => subCadena.map(s2 => s1 ++ s2)) // Generar todas las subcadenas posibles
+          .filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)) // Filtrar las subcadenas que no cumplan con la condición
+      }
 
-    def construirSubcadena(k: Int, subCadena: Seq[Seq[Char]]): Seq[Char] = {
-      if (k > n) subCadena.head
-      else {
-        if (k % 2 == 0) {
-          val nuevasCandidatas1 = subCadena.take(k / 2).flatMap { candidata =>
-            subCadena.flatMap { elemento =>
-              val nuevaSecuencia = candidata ++ elemento
-              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
-              else Seq.empty[Seq[Char]]
-            }
+      def construirSubcadena(k: Int, subCadena: Seq[Seq[Char]]): Seq[Char] = {
+        if (k > n) subCadena.head
+        else {
+          if (k % 2 == 0) {
+            val(nuevasCandidatas1,nuevasCandidatas2) = parallel(filtrar(subCadena.take(k / 2), k / 2), filtrar(subCadena.drop(k / 2), k / 2))
+            val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
+            construirSubcadena(k * 2, candidatasfinal)
+          } else {
+            val(nuevasCandidatas1,nuevasCandidatas2) = parallel(filtrar(subCadena.take((k + 1) / 2), (k + 1) / 2), filtrar(subCadena.drop((k - 1) / 2), (k - 1) / 2))
+            val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
+            construirSubcadena(k * 2, candidatasfinal)
           }
-          val nuevasCandidatas2 = subCadena.drop(k / 2).flatMap { candidata =>
-            subCadena.flatMap { elemento =>
-              val nuevaSecuencia = candidata ++ elemento
-              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
-              else Seq.empty[Seq[Char]]
-            }
-
-          }
-          val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
-          construirSubcadena(k * 2, candidatasfinal)
-        } else {
-          val nuevasCandidatas1 = subCadena.take((k + 1) / 2).flatMap { candidata =>
-            subCadena.flatMap { elemento =>
-              val nuevaSecuencia = candidata ++ elemento
-              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
-              else Seq.empty[Seq[Char]]
-            }
-          }
-          val nuevasCandidatas2 = subCadena.drop((k - 1) / 2).flatMap { candidata =>
-            subCadena.flatMap { elemento =>
-              val nuevaSecuencia = candidata ++ elemento
-              if (o(nuevaSecuencia)) Seq(nuevaSecuencia)
-              else Seq.empty[Seq[Char]]
-            }
-
-          }
-          val candidatasfinal = nuevasCandidatas1 ++ nuevasCandidatas2
         }
       }
-    }
-  }
 
+      val cadena = alfabeto.map(Seq(_))
+      val subcadena = construirSubcadena(2, cadena)
+      subcadena
+  }
   */
 }
 
