@@ -34,7 +34,6 @@ object Proyecto {
 
     def reconstruirCadena(): Seq[Char] = {
       val cadenas = generarCadenas(n)
-
       if (n % 2 == 0) {
         val (cadena1, cadena2) = parallel(cadenas.take(n / 2), (cadenas.drop(n / 2)))
 
@@ -110,7 +109,8 @@ object Proyecto {
   def reconstruirCadenaMejorado(n: Int, o: Oraculo): Seq[Char] = {
 
     def generarCadenasCandidatas(k: Int, candidatas: Seq[Seq[Char]]): Seq[Char] = { // Función que genera las cadenas candidatas
-      if (k == n) {
+     if (n == 1) candidatas.filter(o).head
+      else if (k == n) {
         candidatas.head
       } else {
         val nuevasCandidatas = candidatas.flatMap { candidata =>
@@ -131,15 +131,14 @@ object Proyecto {
 
       cadenasCandidatas()
     }
-
     reconstruirCadena()
   }
-
   /////////// CADENA MEJORADO PARALELO ///////////////
   def reconstruirCadenaMejoradoParalela(n: Int, o: Oraculo): Seq[Char] = {
 
-    def generarCadenasCandidatas(k: Int, candidatas: Seq[Seq[Char]]): Seq[Char] = { // Función que genera las cadenas candidatas
-      if (k == n) {
+    def generarCadenasCandidatas(k: Int, candidatas: Seq[Seq[Char]]): Seq[Char] = { // Función que genera las cadenas candidatasif (n == 1) candidatas.filter(o).head
+      if (n == 1) candidatas.filter(o).head
+      else if (k == n) {
         candidatas.head
       } else {
         if (k % 2 == 0) {
@@ -188,9 +187,10 @@ object Proyecto {
 
   /////////// CADENA TURBO SECUENCIAL ///////////////
 
-  def reconstruirCadenaTurbo(n: Int, o: Oraculo): Seq[Char] = { //Debido a la implementación de la función, solo funciona con cadenas de tamaño ^n
+  def reconstruirCadenaTurbo(n: Int, o: Oraculo): Seq[Char] = {
     def construirSubcadena(k: Int, subcadena: Seq[Seq[Char]]): Seq[Char] = {
-      if (k == n) subcadena.head
+      if (n == 1) subcadena.filter(o).head
+      else if (k == n) subcadena.head
       else {
         val nuevoSubcadena = subcadena.flatMap { secuencia =>
           subcadena.flatMap { elemento =>
@@ -202,17 +202,16 @@ object Proyecto {
         construirSubcadena(k * 2, nuevoSubcadena)
       }
     }
-
     val cadenas = alfabeto.map(Seq(_))
     val subcadena = construirSubcadena(1, cadenas)
     subcadena
   }
-
   /////////// CADENA TURBO PARALELO ///////////////
 
   def reconstruirCadenaTurboParalela(n: Int, o: Oraculo): Seq[Char] = {
     def construirSubcadena(k: Int, subcadena: Seq[Seq[Char]]): Seq[Char] = {
-      if (k == n) subcadena.head
+      if (n == 1) subcadena.filter(o).head
+      else if (k == n) subcadena.head
       else {
         if (k % 2 == 0) {
           val(nuevasCandidatas1,nuevasCandidatas2) = parallel(subcadena.take(k / 2).flatMap { candidata =>
@@ -259,7 +258,6 @@ object Proyecto {
   /////////// CADENA TURBO MEJORADO SECUENCIAL ///////////////
 
   def reconstruirCadenaTurboMejorada(n: Int, o: Oraculo): Seq[Char] = {
-
     def filtrar(subCadena: Seq[Seq[Char]], k: Int): Seq[Seq[Char]] = {
       subCadena.flatMap(s1 => subCadena.map(s2 => s1 ++ s2)) // Generar todas las subcadenas posibles
         .filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)) // Filtrar las subcadenas que no cumplan con la condición
@@ -289,7 +287,6 @@ object Proyecto {
         subcadenas.drop(subcadenas.length / 2).filter(s => (0 to s.length - k).forall(i => subCadena.exists(subSeq => s.drop(i).take(k) == subSeq)) && o(s)))
       subcadenas1 ++ subcadenas2
     }
-
     def construirSubcadena(k: Int, subCadena: Seq[Seq[Char]]): Seq[Char] = {
       if (k > n) subCadena.head
       else {
@@ -329,7 +326,7 @@ object Proyecto {
     (1 to size).map(_ => alfabeto(random.nextInt(alfabeto.length))).mkString
   }
   def main(Args: Array[String]): Unit = {
-    for (n <- 16 to 16) {
+    for (n <- 128 to 128) {
 
       val  alfabeto = Seq('a', 'c', 'g', 't')
       type Oraculo = Seq[Char] => Boolean

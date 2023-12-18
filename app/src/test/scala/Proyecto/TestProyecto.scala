@@ -149,10 +149,10 @@ class TestProyecto extends AnyFunSuite{
 
     test("Prueba 1: Reconstruir cadena turbo"){
         type Oraculo = Seq[Char] => Boolean
-        val n = 4
-        val o: Oraculo = (s: Seq[Char]) => Seq('a', 'c', 'g', 'c').mkString.contains(s.mkString)
+        val n = 2
+        val o: Oraculo = (s: Seq[Char]) => Seq('a', 'g').mkString.contains(s.mkString)
         val resultado = Proyecto.reconstruirCadenaTurbo(n, o)
-        assert(resultado == Seq('a', 'c', 'g', 'c'))
+        assert(resultado == Seq('a', 'g'))
     }
     test("Prueba 2: Reconstruir cadena turbo"){
         type Oraculo = Seq[Char] => Boolean
@@ -163,27 +163,27 @@ class TestProyecto extends AnyFunSuite{
     }
     test("Prueba 3: Reconstruir cadena turbo"){
         type Oraculo = Seq[Char] => Boolean
-        val n = 4
-        val o: Oraculo = (s: Seq[Char]) => Seq('g', 'c', 't', 'a').mkString.contains(s.mkString)
+        val n = 8
+        val o: Oraculo = (s: Seq[Char]) => Seq('g', 'c', 't', 'a', 'g', 'a', 'c', 'g').mkString.contains(s.mkString)
         val resultado = Proyecto.reconstruirCadenaTurbo(n, o)
-        assert(resultado == Seq('g', 'c', 't', 'a'))
+        assert(resultado == Seq('g', 'c', 't', 'a', 'g', 'a', 'c', 'g'))
     }
     test("Prueba 4: Reconstruir cadena turbo"){
         type Oraculo = Seq[Char] => Boolean
-        val n = 4
-        val o: Oraculo = (s: Seq[Char]) => Seq('t', 'a', 'c', 'g').mkString.contains(s.mkString)
+        val n = 8
+        val o: Oraculo = (s: Seq[Char]) => Seq('g', 'c', 't', 'a', 'g', 'a', 'c', 'g').mkString.contains(s.mkString)
         val resultado = Proyecto.reconstruirCadenaTurbo(n, o)
-        assert(resultado == Seq('t', 'a', 'c', 'g'))
+        assert(resultado == Seq('g', 'c', 't', 'a', 'g', 'a', 'c', 'g'))
     }
 
     ////////////// TEST RECONSTRUIR CADENA TURBO PARALELO //////////////
 
     test("Prueba 1: Reconstruir cadena turbo paralelo"){
         type Oraculo = Seq[Char] => Boolean
-        val n = 4
-        val o: Oraculo = (s: Seq[Char]) => Seq('a', 'c', 'g', 'c').mkString.contains(s.mkString)
+        val n = 2
+        val o: Oraculo = (s: Seq[Char]) => Seq('a', 'c' ).mkString.contains(s.mkString)
         val resultado = Proyecto.reconstruirCadenaTurboParalela(n, o)
-        assert(resultado == Seq('a', 'c', 'g', 'c'))
+        assert(resultado == Seq('a', 'c'))
     }
 
     test("Prueba 2: Reconstruir cadena turbo paralelo"){
@@ -195,10 +195,10 @@ class TestProyecto extends AnyFunSuite{
     }
     test("Prueba 3: Reconstruir cadena turbo paralelo"){
         type Oraculo = Seq[Char] => Boolean
-        val n = 4
-        val o: Oraculo = (s: Seq[Char]) => Seq('g', 'c', 't', 'a').mkString.contains(s.mkString)
+        val n = 8
+        val o: Oraculo = (s: Seq[Char]) => Seq('g', 'c', 't', 'a', 'a', 'c', 'g', 'a').mkString.contains(s.mkString)
         val resultado = Proyecto.reconstruirCadenaTurboParalela(n, o)
-        assert(resultado == Seq('g', 'c', 't', 'a'))
+        assert(resultado == Seq('g', 'c', 't', 'a', 'a', 'c', 'g', 'a'))
     }
     test("Prueba 4: Reconstruir cadena turbo paralelo"){
         type Oraculo = Seq[Char] => Boolean
